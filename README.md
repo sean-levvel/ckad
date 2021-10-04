@@ -18,6 +18,10 @@
     Traefik: HTTP reverse proxy with commercial support from Containous
     ```
 
+# Seetting up Kubernetes / CICD
+- [Terragrunt](https://terragrunt.gruntwork.io/) - Terragrunt has the ability to download remote Terraform configurations. The idea is that you define the Terraform code for your infrastructure just once, in a single repo
+
+- [FluxCD](https://fluxcd.io/) - Focuses mostly on CD - canaries, feature flags, and a/b testing. Integrates with helm, aks, jenkins, github, gitlab, bitbucket.
 
 # Section 1
 
@@ -51,3 +55,37 @@
 
 ## Yaml in Kubernetes - Pods
 - 
+
+## ReplicaSets
+- Replication controller ensures that a "x" number of pods are running at all time. It can restart a single pod and or manage multiple pods. 
+```
+apiversion: v1
+kind: ReplicationController
+metadata:
+    name: myapp-rc
+    labels:
+        app: myapp
+        type: front-end
+spec:
+    template:
+        metadata:
+            name: myapp-pod
+            labels:
+              app: myapp
+              type:front-end
+        spec:
+            containers:
+            - name: nginx-container
+              image: nginx
+    replicas: 3
+    selector:
+        matchLables:
+            type: front-end   
+```
+
+- commands used
+    - `kubectl create -f replicaset-definition.yml`
+    - `kubectl get replicaset`
+    - `kubectl delete replicaset myapp-replicaset`
+    - `kubectl replace -f replicaset-definitionl.yml`
+    - `kubectl scale -replicas=6 -f replicaset-definition.yml`
